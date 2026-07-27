@@ -10,11 +10,14 @@ Users start a 30-day free trial. The "event" is converting to paid. At any snaps
 ## Data
 
 Generate synthetic trial data (script in `data/`) with:
-- `time_to_event_days` — days from trial start to conversion, explicit trial-cancel, or censoring (data pull date)
-- `event_observed` — 1 if converted, 0 if censored (includes both "still in trial" and "explicitly canceled" — decide how you want to treat cancellation, and justify it)
+- `signup_date` — when the user started their trial
+- `observed_through_date` — the data-pull cutoff; everyone's observation window ends here at the latest
+- `days_to_conversion_or_censoring` — days from signup to whichever happened first: conversion, explicit trial-cancel, or the observation cutoff
+- `converted` — 1 if conversion was actually observed, 0 if censored (includes both "still in trial" and "explicitly canceled" — decide how you want to treat cancellation, and justify it)
 - `onboarding_completed` — bool, whether user finished onboarding flow
 - `signup_source`
-- `days_since_signup_at_snapshot` — to simulate cohorts of different maturity
+
+You'll need to derive days-since-signup / cohort age yourself from `signup_date` and `observed_through_date` — it isn't handed to you as a precomputed column, same as it wouldn't be in real product data.
 
 ## Questions to work through
 

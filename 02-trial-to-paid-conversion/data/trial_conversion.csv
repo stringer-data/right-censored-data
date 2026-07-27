@@ -1,4 +1,4 @@
-user_id,signup_date,signup_source,onboarding_completed,snapshot_date,time_to_event_days,event_observed
+user_id,signup_date,signup_source,onboarding_completed,observed_through_date,days_to_conversion_or_censoring,converted
 1,2024-04-24,referral,False,2024-06-01,4.9,1
 2,2024-05-23,organic,False,2024-06-01,9.0,0
 3,2024-04-15,referral,True,2024-06-01,7.5,1

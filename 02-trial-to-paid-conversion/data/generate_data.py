@@ -65,7 +65,11 @@ def main():
     # actually been observed as of the snapshot date.
     observation_cap = np.minimum(TRIAL_LENGTH_DAYS, days_since_signup_at_snapshot)
 
+    # days_to_conversion_or_censoring: days from signup to whichever happened
+    # first among conversion, explicit cancellation, or the observation cutoff.
     time_to_event_days = np.minimum(true_time_to_convert, observation_cap)
+    # converted: 1 if conversion was actually observed by the cutoff, 0 if the
+    # user was still unconverted (censored) as of that cutoff.
     event_observed = (true_time_to_convert <= observation_cap).astype(int)
 
     # Apply explicit cancellation: if it happens before the observation cap
@@ -83,15 +87,15 @@ def main():
             "signup_date": signup_date.strftime("%Y-%m-%d"),
             "signup_source": signup_source,
             "onboarding_completed": onboarding_completed,
-            "snapshot_date": SNAPSHOT_DATE.strftime("%Y-%m-%d"),
-            "time_to_event_days": np.round(time_to_event_days, 1),
-            "event_observed": event_observed,
+            "observed_through_date": SNAPSHOT_DATE.strftime("%Y-%m-%d"),
+            "days_to_conversion_or_censoring": np.round(time_to_event_days, 1),
+            "converted": event_observed,
         }
     )
 
     df.to_csv("trial_conversion.csv", index=False)
     print(f"Wrote trial_conversion.csv with {len(df)} rows")
-    print(f"Overall conversion rate (naive): {df['event_observed'].mean():.3f}")
+    print(f"Overall conversion rate (naive): {df['converted'].mean():.3f}")
 
     with open("_ground_truth.md", "w") as f:
         f.write(
