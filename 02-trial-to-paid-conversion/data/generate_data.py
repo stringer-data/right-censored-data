@@ -24,6 +24,7 @@ RNG = np.random.default_rng(42)
 N = 3000
 TRIAL_LENGTH_DAYS = 30
 LOOKBACK_DAYS = 84  # snapshot pulled "today"; signups happened up to 84 days ago
+SNAPSHOT_DATE = pd.Timestamp("2024-06-01")
 
 BASELINE_SHAPE = 1.8
 BASELINE_SCALE = 20.0
@@ -44,6 +45,7 @@ def main():
     onboarding_completed = RNG.random(N) < ONBOARDING_COMPLETE_RATE
 
     days_since_signup_at_snapshot = RNG.uniform(0, LOOKBACK_DAYS, size=N).astype(int)
+    signup_date = SNAPSHOT_DATE - pd.to_timedelta(days_since_signup_at_snapshot, unit="D")
 
     aft_factor = np.array([SOURCE_AFT_FACTOR[s] for s in signup_source])
     aft_factor = aft_factor * np.where(onboarding_completed, ONBOARDING_AFT_FACTOR, 1.0)
@@ -78,9 +80,10 @@ def main():
     df = pd.DataFrame(
         {
             "user_id": user_id,
+            "signup_date": signup_date.strftime("%Y-%m-%d"),
             "signup_source": signup_source,
             "onboarding_completed": onboarding_completed,
-            "days_since_signup_at_snapshot": days_since_signup_at_snapshot,
+            "snapshot_date": SNAPSHOT_DATE.strftime("%Y-%m-%d"),
             "time_to_event_days": np.round(time_to_event_days, 1),
             "event_observed": event_observed,
         }
