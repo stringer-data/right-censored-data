@@ -1,6 +1,6 @@
 # Right-Censored Data: Case Studies
 
-A learning project working through right-censored data and survival analysis via five case studies, roughly ordered from foundational to advanced. Two are product-analytics flavored (churn, conversion), and three are the "classic" domains where survival analysis was born (reliability engineering, clinical trials) plus a hybrid (LTV).
+A learning project working through right-censored data and survival analysis via six case studies, roughly ordered from foundational to advanced. Two are product-analytics flavored (churn, conversion), one is trust & safety (fraud), and three are the "classic" domains where survival analysis was born (reliability engineering, clinical trials) plus a hybrid (LTV).
 
 ## What is right-censoring?
 
@@ -15,6 +15,7 @@ An observation is right-censored when we know the event of interest *hasn't happ
 | 03 | [customer-ltv-under-censoring](./03-customer-ltv-under-censoring) | Product analytics / general | Restricted mean survival time, naive-vs-correct LTV estimation |
 | 04 | [equipment-reliability-weibull](./04-equipment-reliability-weibull) | Reliability engineering | Weibull fitting, hazard functions, MTTF |
 | 05 | [clinical-trial-survival](./05-clinical-trial-survival) | Biostatistics | Kaplan-Meier, log-rank test, Cox PH (the textbook case study) |
+| 06 | [fraud-chargeback-censoring](./06-fraud-chargeback-censoring) | Trust & safety / payments risk | Real data (IEEE-CIS) + synthetic reporting-lag censoring, KM, AFT models |
 
 Work through them in order if you want KM → Cox → parametric → applied, or jump straight to whichever domain is most relevant to you. Each project folder has its own README with background, dataset notes, and a set of questions to answer — the same shape a real case study writeup would take.
 
