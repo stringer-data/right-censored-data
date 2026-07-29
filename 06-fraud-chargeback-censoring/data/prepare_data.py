@@ -50,17 +50,21 @@ LAG_SIGMA = 0.9  # lognormal shape: controls the long tail
 # Observation cutoff: the "today" of this dataset. Transactions near the
 # cutoff haven't had time for their chargeback to be reported yet, even if
 # genuinely fraudulent -- this is what creates the censoring.
-SNAPSHOT_LOOKBACK_DAYS = 120  # snapshot_date = latest transaction date - this
+SNAPSHOT_LOOKBACK_DAYS = 45  # snapshot_date = latest transaction date - this
 
 
 def main():
     raw = pd.read_csv(RAW_PATH)
+    raw["transaction_date"] = REFERENCE_DATE + pd.to_timedelta(raw["TransactionDT"], unit="s")
+
+    # Snapshot cutoff is fixed relative to the FULL date range, not the
+    # subsample, and we then only keep transactions that actually happened
+    # on or before it -- a transaction from the future relative to "today"
+    # shouldn't be in an as-of-snapshot dataset at all.
+    snapshot_date = raw["transaction_date"].max() - pd.Timedelta(days=SNAPSHOT_LOOKBACK_DAYS)
+    raw = raw[raw["transaction_date"] <= snapshot_date]
 
     df = raw.sample(n=min(N_SAMPLE, len(raw)), random_state=42).reset_index(drop=True)
-
-    df["transaction_date"] = REFERENCE_DATE + pd.to_timedelta(df["TransactionDT"], unit="s")
-
-    snapshot_date = df["transaction_date"].max() - pd.Timedelta(days=SNAPSHOT_LOOKBACK_DAYS)
 
     n = len(df)
     is_fraud = df["isFraud"] == 1
